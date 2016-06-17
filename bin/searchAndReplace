@@ -93,6 +93,11 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
          print $fh 's/\b(lz_mutex_lock)\b/$1_or_abort/        ' . ";\n" ;
          print $fh 's/\b(lz_mutex_unlock)\b/$1_or_abort/      ' . ";\n" ;
          print $fh 's/\b(lz_mutex_trylock)\b/$1_or_abort/     ' . ";\n" ;
+         print $fh 's/\b(lz_mutex_consistent)\b/$1_or_abort/     ' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/\b(lz_mutex_init.*)(\s*\)\s*;)/$1 | LZ_MUTEX_INIT_ABORT_ON_ERROR$2/     ' . ";\n" ;
       }
    
       print $fh "}\n" ;
