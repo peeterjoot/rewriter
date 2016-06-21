@@ -89,6 +89,26 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         foreach (qw(lz_cond_wait lz_cond_timedwait lz_cond_broadcast lz_cond_destroy lz_cond_init lz_cond_signal))
+         {
+            print $fh 's/\b('. $_ . ')\b/'. $_. '_or_abort/' . ";\n" ;
+         }
+      }
+      elsif ( 1 )
+      {
+         #print $fh 's/\b(jthread_mutex_t)\b/lz_mutex/' . ";\n" ;
+         #print $fh 's/\b(jthread_mutex_lock)\b/lz_mutex_lock_or_abort/' . ";\n" ;
+         print $fh 's/\b(jthread_mutex_unlock)\b/lz_mutex_unlock_or_abort/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/\b(LZ_MUTEX_INIT)\b/$1( LZ_MUTEX_DO_NOT_USE_JTHREAD_INSTRUMENTATION )/' . ";\n" ;
+         print $fh 's/\b(LZ_MUTEX_RECURSIVE_INIT)\b/$1( LZ_MUTEX_DO_NOT_USE_JTHREAD_INSTRUMENTATION )/' . ";\n" ;
+         print $fh 's/\b(LZ_MUTEX_ERRORCHECK_INIT)\b/$1( LZ_MUTEX_DO_NOT_USE_JTHREAD_INSTRUMENTATION )/' . ";\n" ;
+         #define LZ_MUTEX_USE_JTHREAD_INSTRUMENTATION 1
+      }
+      elsif ( 1 )
+      {
          print $fh 's/\b(lz_mutex_destroy)\b/$1_or_abort/     ' . ";\n" ;
          print $fh 's/\b(lz_mutex_lock)\b/$1_or_abort/        ' . ";\n" ;
          print $fh 's/\b(lz_mutex_unlock)\b/$1_or_abort/      ' . ";\n" ;
