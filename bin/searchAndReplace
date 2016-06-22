@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/$/\\n\\n#include "ztypes.h"\\n/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          foreach (qw(lz_cond_wait lz_cond_timedwait lz_cond_broadcast lz_cond_destroy lz_cond_init lz_cond_signal))
          {
             print $fh 's/\b('. $_ . ')\b/'. $_. '_or_abort/' . ";\n" ;
