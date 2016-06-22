@@ -47,8 +47,8 @@ delete $ENV{'ENV'} ;
 delete $ENV{'BASH_ENV'} ;
 
 # Set STDOUT and STDERR to unbuffered
-select STDERR ; $| = 1;
-select STDOUT ; $| = 1;
+select STDERR ; $| = 1 ;
+select STDOUT ; $| = 1 ;
 
 my ($myName,$usage) = '' ;
 
