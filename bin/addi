@@ -1,0 +1,172 @@
+#!/usr/bin/perl
+
+#-----------------------------------------------------------------------------
+# POD Format Documentation.  Read "perldoc perlpod" for an example.
+# When done, check syntax with "podchecker".
+
+=head1 NAME
+
+addi - Add '#include' or forward reference to a file.
+
+=head1 SYNOPSIS
+
+addi [--help] {--class foo|--struct foo|--union foo|--user foo.h|--system foo.h} [--comment c]
+
+=head1 DESCRIPTION
+
+Find the first #define or #include in a file, and add an additional #include or forward reference at that point.
+
+Options:
+
+=over 4
+
+=item --user=foo.h
+
+Add:
+
+   #include <foo.h>
+
+=item --system=foo.h
+
+Add:
+
+   #include <foo.h>
+
+=item --comment='text'
+
+Add:
+
+ // text
+
+to the line added.
+
+=item --(struct|class|union)=name
+
+Adds:
+
+   type name ;
+
+at the #include point.
+
+=back 
+
+=head1 SUPPORTED PLATFORMS
+
+ Unix (Linux verified)
+
+=head1 SUPPORT
+
+ Send email to peeter.joot@lzlabs.com
+
+=head1 AUTHORS
+
+ Peeter Joot
+
+=cut
+
+#-----------------------------------------------------------------------------
+
+use strict ;
+use warnings ;
+use Getopt::Long ;
+use Pod::Usage ;
+
+# Suppress sourcing of users' .bashrc files in invoked shells
+delete $ENV{'ENV'} ;
+delete $ENV{'BASH_ENV'} ;
+
+# Set STDOUT and STDERR to unbuffered
+select STDERR ; $| = 1 ;
+select STDOUT ; $| = 1 ;
+
+my ($myName,$usage) = '' ;
+
+($myName = $0) =~ s@.*[/\\]@@ ;
+my @class = () ;
+my @union = () ;
+my @struct = () ;
+my @system = () ;
+my @user = () ;
+my $comment = '' ;
+
+GetOptions ( 
+   'file=s'             => \@file,
+   'user=s'             => \@user,
+   'system=s'           => \@system,
+   'class=s'            => \@class,
+   'union=s'            => \@union,
+   'struct=s'           => \@struct,
+   'comment=s'          => \$comment,
+   'help'               => sub { pod2usage(-verbose => 2) ; },
+) or pod2usage(-verbose => 0) ;
+
+# Validate/handle options, and everything else...
+
+if ( ( scalar( @user ) +
+       scalar( @system ) +
+       scalar( @class ) +
+       scalar( @union ) +
+       scalar( @struct ) +
+       0 ) == 0 )
+{
+   die "$myName: one of the mandatory arguments must be supplied.\n" ;
+}
+
+unless ( scalar( @file ) )
+{
+   die "$myName: -file must be specified" ;
+}
+
+my $newtext = insertionString() ;
+
+foreach ( @file )
+{
+   die "$myName: cannot access '$_'" unless ( -e "$_" ) ;
+
+   my $g = `grep -ne '^ *# *define' -e '^ *# *include' $_ .u 2>/dev/null | head -1` ; chomp $g ;
+
+   die "$myName: header: '$_' has no include guard nor #includes.\n" if ( $g eq '' ) ;
+
+   $g =~ /^.*?:(\d+):/ or die "$myName: malformed grep result '$g'" ;
+   my $lineno = $1 ;
+
+   searchAndReplace( $_, $lineno, $newtext ) ;
+}
+
+exit 0 ;
+
+sub insertionString
+{
+   my $out = '' ;
+   my $c = '' ;
+   my @s = () ;
+   
+   $c = " // $comment" if ( $comment ne '' ) ;
+
+   push( @s, map{ qq(#include "$_"$c\n) } @user ) ;
+   push( @s, map{ qq(#include <$_>$c\n) } @system ) ;
+   push( @s, map{ qq(class $_ ;\n) } @class ) ;
+   push( @s, map{ qq(struct $_ ;\n) } @struct ) ;
+   push( @s, map{ qq(union $_ ;\n) } @union ) ;
+
+   $out .= $_ foreach ( @s ) ;
+
+   return $out ;
+}
+
+sub searchAndReplace
+{
+   my ( $file, $lineno, $add ) = @_ ;
+
+   open my $fh, ">tmp$$" or die ;
+
+      print $fh "if ( \$. == $line )\n{\n" ;
+
+      print $fh 'print qq(' . $add . ') ;' . "\n" ;
+
+      print $fh "}\n" ;
+
+   close $fh ;
+
+   system( "perl -p -i ./tmp$$ $file ; rm tmp$$" ) ;
+}
