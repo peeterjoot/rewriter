@@ -20,6 +20,10 @@ Options:
 
 =over 4
 
+=item --[no-]interactive
+
+Invoke vim at the edit insertion point.
+
 =item --user=foo.h
 
 Add:
@@ -87,9 +91,12 @@ my @union = () ;
 my @struct = () ;
 my @system = () ;
 my @user = () ;
+my @file = () ;
 my $comment = '' ;
+my $interactive = 1 ;
 
 GetOptions ( 
+   'interactive!'       => \$interactive,
    'file=s'             => \@file,
    'user=s'             => \@user,
    'system=s'           => \@system,
@@ -130,7 +137,7 @@ foreach ( @file )
    $g =~ /^.*?:(\d+):/ or die "$myName: malformed grep result '$g'" ;
    my $lineno = $1 ;
 
-   searchAndReplace( $_, $lineno, $newtext ) ;
+   searchAndReplace( $_, $lineno + 1, $newtext ) ;
 }
 
 exit 0 ;
@@ -160,7 +167,7 @@ sub searchAndReplace
 
    open my $fh, ">tmp$$" or die ;
 
-      print $fh "if ( \$. == $line )\n{\n" ;
+      print $fh "if ( \$. == $lineno )\n{\n" ;
 
       print $fh 'print qq(' . $add . ') ;' . "\n" ;
 
@@ -169,4 +176,5 @@ sub searchAndReplace
    close $fh ;
 
    system( "perl -p -i ./tmp$$ $file ; rm tmp$$" ) ;
+   system( "vim +$lineno $file" ) if ( $interactive ) ;
 }
