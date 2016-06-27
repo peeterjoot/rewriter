@@ -6,11 +6,11 @@
 
 =head1 NAME
 
-addi - Add '#include' or forward reference to a file.
+addi - Add '#include' or forward reference to a set of files.
 
 =head1 SYNOPSIS
 
-addi [--help] {--class foo|--struct foo|--union foo|--user foo.h|--system foo.h} [--comment c]
+addi [--help] {--class foo|--struct foo|--union foo|--user foo.h|--system foo.h} [--comment c] LISTOFFILENAMES
 
 =head1 DESCRIPTION
 
@@ -95,14 +95,14 @@ my @union = () ;
 my @struct = () ;
 my @system = () ;
 my @user = () ;
-my @file = () ;
 my @lookup = () ;
 my $comment = '' ;
 my $interactive = 1 ;
 
+Getopt::Long::Configure( 'pass_through' ) ;
+
 GetOptions ( 
    'interactive!'       => \$interactive,
-   'file=s'             => \@file,
    'lookup=s'           => \@lookup,
    'user=s'             => \@user,
    'system=s'           => \@system,
@@ -112,6 +112,8 @@ GetOptions (
    'comment=s'          => \$comment,
    'help'               => sub { pod2usage(-verbose => 2) ; },
 ) or pod2usage(-verbose => 0) ;
+
+my @file = @ARGV ;
 
 # Validate/handle options, and everything else...
 
