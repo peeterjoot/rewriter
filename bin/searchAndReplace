@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/strerror/lz_strerror_r/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/LZ_MUTEX_INIT_DO_NOT_LOG_ERRORS/LZ_OP_NO_ERROR_LOGGING/' . ";\n" ;
       }
       elsif ( 1 )
