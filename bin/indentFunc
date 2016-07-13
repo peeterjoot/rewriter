@@ -67,7 +67,7 @@ select STDERR; $| = 1 ;
 select STDOUT; $| = 1 ;
 
 #declare lexical variables to be used anywhere in this script (pseudo-global)
-my ($myName,$usage) = "" ;
+my $myName = "" ;
 my $tabStop = 3 ;
 
 ($myName = $0) =~ s@.*[/\\]@@ ;
