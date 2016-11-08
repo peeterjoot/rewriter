@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/\b_close\b/close/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/strerror/lz_strerror_r/' . ";\n" ;
       }
       elsif ( 1 )
