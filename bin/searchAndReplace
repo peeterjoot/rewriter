@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/\b_cleanup\b/__lz_g__cleanup/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/\b_close\b/close/' . ";\n" ;
       }
       elsif ( 1 )
@@ -141,5 +145,7 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
    close $fh ;
 
-   system( "perl -p -i ./tmp$$ $file ; rm tmp$$" ) ;
+   #print "# perl -p -i ./tmp$$ $file ; rm tmp$$\n" ;
+   system( "perl -p -i ./tmp$$ $file" ) ;
+   system( "rm tmp$$" ) ;
 }
