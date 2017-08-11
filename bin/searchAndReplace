@@ -89,6 +89,14 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/ = 0;/ = NULL;/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/ = 0;/ = false;/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/\b_cleanup\b/__lz_g__cleanup/' . ";\n" ;
       }
       elsif ( 1 )
