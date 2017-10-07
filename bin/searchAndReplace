@@ -89,6 +89,11 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         #print $fh 's/gdbarch_byte_order *\( *get_type_arch *\( *(\S+) *\) *\)/gdbarch_byte_order_for_type ($1)/' . ";\n" ;
+         print $fh 's/gdbarch_byte_order_for_type *\( *(\S+) *\)/gdbarch_byte_order_for_type2 (NULL, $1)/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/ = 0;/ = NULL;/' . ";\n" ;
       }
       elsif ( 1 )
