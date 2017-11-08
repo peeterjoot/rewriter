@@ -89,6 +89,14 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         #DCL myFile CHAR(10) INIT ('indexFile');  
+         #LogicalName="indexFile" 
+
+         print $fh 's/ LogicalName="indexFile"/ LogicalName="indexFil"/' . ";\n" ;
+         print $fh "s/ myFile CHAR.10. INIT ..indexFile../ myFile CHAR(10) INIT ('indexFil')/;\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/ = 0;/ = NULL;/' . ";\n" ;
       }
       elsif ( 1 )
