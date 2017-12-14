@@ -89,6 +89,11 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/\.dat//;' . ";\n" ;
+         print $fh 's/\.txt//;' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/ = 0;/ = NULL;/' . ";\n" ;
       }
       elsif ( 1 )
