@@ -89,8 +89,21 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         #print $fh 's/gdbarch_byte_order *\( *get_type_arch *\( *(\S+) *\) *\)/gdbarch_byte_order_for_type ($1)/' . ";\n" ;
+         print $fh 's/gdbarch_byte_order_for_type *\( *(\S+) *\)/gdbarch_byte_order_for_type2 (NULL, $1)/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/\.dat//;' . ";\n" ;
          print $fh 's/\.txt//;' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         #DCL myFile CHAR(10) INIT ('indexFile');  
+         #LogicalName="indexFile" 
+
+         print $fh 's/ LogicalName="indexFile"/ LogicalName="indexFil"/' . ";\n" ;
+         print $fh "s/ myFile CHAR.10. INIT ..indexFile../ myFile CHAR(10) INIT ('indexFil')/;\n" ;
       }
       elsif ( 1 )
       {
