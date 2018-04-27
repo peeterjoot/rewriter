@@ -94,6 +94,14 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       }
       elsif ( 1 )
       {
+         print $fh 's/ ENTRY / ENTRY EXTERNAL /' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/__x/__x, __y/g' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          #print $fh 's/gdbarch_byte_order *\( *get_type_arch *\( *(\S+) *\) *\)/gdbarch_byte_order_for_type ($1)/' . ";\n" ;
          print $fh 's/gdbarch_byte_order_for_type *\( *(\S+) *\)/gdbarch_byte_order_for_type2 (NULL, $1)/' . ";\n" ;
       }
