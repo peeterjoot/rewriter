@@ -89,6 +89,16 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         #DCL myFile CHAR(10) INIT ('indexFile');  
+         #LogicalName="indexFile" 
+
+         print $fh 's/ LogicalName="indexFile"/ LogicalName="idxFile"/' . ";\n" ;
+         print $fh 's/ Path="indexFile"/ Path="idxFile"/' . ";\n" ;
+         #print $fh "s/ INIT ..indexFile../ INIT ('idxFile')/;\n" ;
+         print $fh "s/ INIT ..indexFil../ INIT ('idxFile')/;\n" ;
+      }
+      if ( 1 )
+      {
          #print $fh 's/\\\\lr{ *\\\\spacegrad *\\+ *\\\\inv{c} *\\\\PD{t}{} *}/\\\\stgrad/' . ";\n" ;
          print $fh 's/\\\\lr{ *\\\\spacegrad *- *\\\\inv{c} *\\\\PD{t}{} *}/\\\\conjstgrad/' . ";\n" ;
       }
@@ -109,14 +119,6 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       {
          print $fh 's/\.dat//;' . ";\n" ;
          print $fh 's/\.txt//;' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         #DCL myFile CHAR(10) INIT ('indexFile');  
-         #LogicalName="indexFile" 
-
-         print $fh 's/ LogicalName="indexFile"/ LogicalName="indexFil"/' . ";\n" ;
-         print $fh "s/ myFile CHAR.10. INIT ..indexFile../ myFile CHAR(10) INIT ('indexFil')/;\n" ;
       }
       elsif ( 1 )
       {
