@@ -89,6 +89,12 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         #print $fh 's/$/ :LastUsableColumn=72/' . ";\n" ;
+         #print $fh 's/$/ :LastUsableColumn=80/' . ";\n" ;
+         print $fh 's/:LastUsableColumn=72/:LastUsableColumn=80/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          #DCL myFile CHAR(10) INIT ('indexFile');  
          #LogicalName="indexFile" 
 
@@ -97,7 +103,7 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
          #print $fh "s/ INIT ..indexFile../ INIT ('idxFile')/;\n" ;
          print $fh "s/ INIT ..indexFil../ INIT ('idxFile')/;\n" ;
       }
-      if ( 1 )
+      elsif ( 1 )
       {
          #print $fh 's/\\\\lr{ *\\\\spacegrad *\\+ *\\\\inv{c} *\\\\PD{t}{} *}/\\\\stgrad/' . ";\n" ;
          print $fh 's/\\\\lr{ *\\\\spacegrad *- *\\\\inv{c} *\\\\PD{t}{} *}/\\\\conjstgrad/' . ";\n" ;
