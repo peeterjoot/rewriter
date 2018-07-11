@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/ ENTRY / EXTERNAL ENTRY /' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          #print $fh 's/$/ :LastUsableColumn=72/' . ";\n" ;
          #print $fh 's/$/ :LastUsableColumn=80/' . ";\n" ;
          print $fh 's/:LastUsableColumn=72/:LastUsableColumn=80/' . ";\n" ;
@@ -107,10 +111,6 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       {
          #print $fh 's/\\\\lr{ *\\\\spacegrad *\\+ *\\\\inv{c} *\\\\PD{t}{} *}/\\\\stgrad/' . ";\n" ;
          print $fh 's/\\\\lr{ *\\\\spacegrad *- *\\\\inv{c} *\\\\PD{t}{} *}/\\\\conjstgrad/' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/ ENTRY / ENTRY EXTERNAL /' . ";\n" ;
       }
       elsif ( 1 )
       {
