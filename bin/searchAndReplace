@@ -89,6 +89,15 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+#         print $fh 'next if ( s/display \(/put skip list (/' . ");\n" ;
+#         print $fh 'next if ( s/display\(/put skip list(/' . ");\n" ;
+         print $fh 's/DISPLAY( *)\(/PUT SKIP LIST$1(/i' . ";\n" ;
+#         print $fh 'next if ( s/DISPLAY\(/PUT SKIP LIST(/' . ");\n" ;
+#         print $fh 'next if ( s/Display \(/Put Skip List (/' . ");\n" ;
+#         print $fh 'next if ( s/Display\(/Put Skip List(/' . ");\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/ ENTRY / EXTERNAL ENTRY /' . ";\n" ;
       }
       elsif ( 1 )
@@ -192,7 +201,7 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
    close $fh ;
 
-   #print "# perl -p -i ./tmp$$ $file ; rm tmp$$\n" ;
-   system( "perl -p -i ./tmp$$ $file" ) ;
+   #print "# perl -p -i ./tmp$$ '$file' ; rm tmp$$\n" ;
+   system( "perl -p -i ./tmp$$ '$file'" ) ;
    system( "rm tmp$$" ) ;
 }
