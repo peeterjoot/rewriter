@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/=> (.)/=> ${1}PDS-member-missing: /' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
 #         print $fh 'next if ( s/display \(/put skip list (/' . ");\n" ;
 #         print $fh 'next if ( s/display\(/put skip list(/' . ");\n" ;
          print $fh 's/DISPLAY( *)\(/PUT SKIP LIST$1(/i' . ";\n" ;
