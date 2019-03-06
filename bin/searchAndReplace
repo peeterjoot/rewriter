@@ -93,6 +93,31 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       }
       elsif ( 1 )
       {
+         print $fh 's/\}/.}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/$/./' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/^ *$/%/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/com.eranea.ecep.editors/com.eranea.ecep.editors.cobol./g' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/}/.}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/}{fig:/.}{fig:/' . ";\n" ;
+>>>>>>> eranea and latex patterns.
+      }
+      elsif ( 1 )
+      {
 #         print $fh 'next if ( s/display \(/put skip list (/' . ");\n" ;
 #         print $fh 'next if ( s/display\(/put skip list(/' . ");\n" ;
          print $fh 's/DISPLAY( *)\(/PUT SKIP LIST$1(/i' . ";\n" ;
