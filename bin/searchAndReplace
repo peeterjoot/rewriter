@@ -89,6 +89,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/= *0/= NULL/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/$/./' . ";\n" ;
       }
       elsif ( 1 )
