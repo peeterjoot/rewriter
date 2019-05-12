@@ -89,6 +89,15 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
 
       if ( 1 )
       {
+         print $fh 's/=>\s*(.*)/=> qq(LZLANG-718), # $1/' . ";\n" ;
+         #print $fh 's/=>\s*(.*)/=> qq(1151133824), # $1/' . ";\n" ;
+      }
+      
+      if ( 0 )
+      {
+      }
+      elsif ( 1 )
+      {
          print $fh 's/^ *$/%/' . ";\n" ;
       }
       elsif ( 1 )
