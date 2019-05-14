@@ -101,6 +101,14 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       {
          print $fh 's/^ *$/%/' . ";\n" ;
       }
+
+      if ( 1 )
+      {
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/}/.}/' . ";\n" ;
+      }
       elsif ( 1 )
       {
          print $fh 's/{0\.3}/{0.2}/' . ";\n" ;
@@ -112,10 +120,6 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       elsif ( 1 )
       {
          print $fh 's/$/./' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/}/.}/' . ";\n" ;
       }
       elsif ( 1 )
       {
