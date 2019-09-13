@@ -88,7 +88,7 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       print $fh "if ( \$. == $_ )\n{\n" ;
 
       #@@
-      if ( 1 )
+      if ( 0 )
       {
          print $fh 's/\%INCLUDE  *SQLCA *;/EXEC SQL INCLUDE SQLCA;/i' . ";\n" ;
          #print $fh 's/=>\s*(.*)/=> qq(1151134216), # $1/' . ";\n" ;
