@@ -107,13 +107,21 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       {
          print $fh 's/^ *$/%/' . ";\n" ;
       }
-
-      if ( 1 )
+      elsif ( 1 )
       {
+         print $fh 's/}{problem/.}{problem/' . ";\n" ;
       }
       elsif ( 1 )
       {
-         print $fh 's/}/.}/' . ";\n" ;
+         print $fh 's/} *$/.}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/}{fig:/.}{fig:/' . ";\n" ;
+      }
+
+      if ( 1 )
+      {
       }
       elsif ( 1 )
       {
@@ -126,10 +134,6 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       elsif ( 1 )
       {
          print $fh 's/$/./' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/}{fig:/.}{fig:/' . ";\n" ;
       }
       elsif ( 1 )
       {
