@@ -105,6 +105,26 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       }
       elsif ( 1 )
       {
+         print $fh 's/__SLBF/__LZ_SLBF/g' . ";\n" ;
+         print $fh 's/__SNBF/__LZ_SNBF/g' . ";\n" ;
+         print $fh 's/__SRD/__LZ_SRD/g' . ";\n" ;
+         print $fh 's/__SWR/__LZ_SWR/g' . ";\n" ;
+         print $fh 's/__SRW/__LZ_SRW/g' . ";\n" ;
+         print $fh 's/__SEOF/__LZ_SEOF/g' . ";\n" ;
+         print $fh 's/__SERR/__LZ_SERR/g' . ";\n" ;
+         print $fh 's/__SMBF/__LZ_SMBF/g' . ";\n" ;
+         print $fh 's/__SAPP/__LZ_SAPP/g' . ";\n" ;
+         print $fh 's/__SSTR/__LZ_SSTR/g' . ";\n" ;
+         print $fh 's/__SOPT/__LZ_SOPT/g' . ";\n" ;
+         print $fh 's/__SNPT/__LZ_SNPT/g' . ";\n" ;
+         print $fh 's/__SOFF/__LZ_SOFF/g' . ";\n" ;
+         print $fh 's/__SMOD/__LZ_SMOD/g' . ";\n" ;
+         print $fh 's/__SALC/__LZ_SALC/g' . ";\n" ;
+         print $fh 's/__SIGN/__LZ_SIGN/g' . ";\n" ;
+         print $fh 's/__S2OAP/__LZ_S2OAP/g' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/^ *$/%/' . ";\n" ;
       }
       elsif ( 1 )
