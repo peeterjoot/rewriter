@@ -100,8 +100,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
          #print $fh 's/=>\s*(.*)/=> qq(1151134216), # $1/' . ";\n" ;
       }
       
-      if ( 0 )
+      if ( 1 )
       {
+         #print $fh 's/\bwchar_t\b/__lz_wchar_t/g' . ";\n" ;
+         print $fh 's/\bmbstate_t\b/__lz_mbstate_t/g' . ";\n" ;
       }
       elsif ( 1 )
       {
