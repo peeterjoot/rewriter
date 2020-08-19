@@ -102,6 +102,15 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       
       if ( 1 )
       {
+         #print $fh 's/__lz_getcrt_globals\( *\)/__lz_getcrt_globals( nullptr )/' . ";\n" ;
+         print $fh 's/__lz_getcrt_globals\( nullptr \)/__lz_getcrt_globals( regs )/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/ *\d+$//' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          #print $fh 's/\bwchar_t\b/__lz_wchar_t/g' . ";\n" ;
          print $fh 's/\bmbstate_t\b/__lz_mbstate_t/g' . ";\n" ;
       }
