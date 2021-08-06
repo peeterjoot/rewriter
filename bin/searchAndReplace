@@ -100,37 +100,58 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
          #print $fh 's/=>\s*(.*)/=> qq(1151134216), # $1/' . ";\n" ;
       }
      
-      if ( 1 )
+      if ( 0 )
       {
-         print $fh 's/__isBFP/__lz___isBFP/g;' . ";\n" ;
+         #print $fh 's/^/CFLAGS += :FIXEDBIN=63/g' . ";\n" ;
+         print $fh 's,^,CFLAGS += :IncludeSearchDir=../../DR3748/include,' . ";\n" ;
       }
       elsif ( 1 )
       {
-         #print $fh 's/O_APPEND/__PATH_OAPPEND/g;' . ";\n" ;
-         #print $fh 's/O_CREAT/__PATH_OCREAT/g;' . ";\n" ;
-         #print $fh 's/O_EXCL/__PATH_OEXCL/g;' . ";\n" ;
-         #print $fh 's/O_NOCTTY/__PATH_ONOCTTY/g;' . ";\n" ;
-         #print $fh 's/O_NONBLOCK/__PATH_ONONBLOCK/g;' . ";\n" ;
-         #print $fh 's/O_RDONLY/__PATH_ORDONLY/g;' . ";\n" ;
-         #print $fh 's/O_RDWR/__PATH_ORDWR/g;' . ";\n" ;
-         #print $fh 's/O_TRUNC/__PATH_OTRUNC/g;' . ";\n" ;
-         #print $fh 's/O_WRONLY/__PATH_OWRONLY/g;' . ";\n" ;
+         print $fh 's/C370_ERRNO\( *glob *\) = (__LZ[^ ;]+)/__lz_set_errno( glob, $1 )/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/C370_ERRNO\( *glob *\) = 0/__lz_set_errno( glob, 0 )/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/"  /.h"/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/ZDEBUG\(/ZDEBUG("%s",/g' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/__isBFP/__lz___isBFP/g' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         #print $fh 's/O_APPEND/__PATH_OAPPEND/g' . ";\n" ;
+         #print $fh 's/O_CREAT/__PATH_OCREAT/g' . ";\n" ;
+         #print $fh 's/O_EXCL/__PATH_OEXCL/g' . ";\n" ;
+         #print $fh 's/O_NOCTTY/__PATH_ONOCTTY/g' . ";\n" ;
+         #print $fh 's/O_NONBLOCK/__PATH_ONONBLOCK/g' . ";\n" ;
+         #print $fh 's/O_RDONLY/__PATH_ORDONLY/g' . ";\n" ;
+         #print $fh 's/O_RDWR/__PATH_ORDWR/g' . ";\n" ;
+         #print $fh 's/O_TRUNC/__PATH_OTRUNC/g' . ";\n" ;
+         #print $fh 's/O_WRONLY/__PATH_OWRONLY/g' . ";\n" ;
 
-         print $fh 's/__PATH_OAPPEND/O_APPEND/g;' . ";\n" ;
-         print $fh 's/__PATH_OCREAT/O_CREAT/g;' . ";\n" ;
-         print $fh 's/__PATH_OEXCL/O_EXCL/g;' . ";\n" ;
-         print $fh 's/__PATH_ONOCTTY/O_NOCTTY/g;' . ";\n" ;
-         print $fh 's/__PATH_ONONBLOCK/O_NONBLOCK/g;' . ";\n" ;
-         print $fh 's/__PATH_ORDONLY/O_RDONLY/g;' . ";\n" ;
-         print $fh 's/__PATH_ORDWR/O_RDWR/g;' . ";\n" ;
-         print $fh 's/__PATH_OTRUNC/O_TRUNC/g;' . ";\n" ;
-         print $fh 's/__PATH_OWRONLY/O_WRONLY/g;' . ";\n" ;
+         print $fh 's/__PATH_OAPPEND/O_APPEND/g' . ";\n" ;
+         print $fh 's/__PATH_OCREAT/O_CREAT/g' . ";\n" ;
+         print $fh 's/__PATH_OEXCL/O_EXCL/g' . ";\n" ;
+         print $fh 's/__PATH_ONOCTTY/O_NOCTTY/g' . ";\n" ;
+         print $fh 's/__PATH_ONONBLOCK/O_NONBLOCK/g' . ";\n" ;
+         print $fh 's/__PATH_ORDONLY/O_RDONLY/g' . ";\n" ;
+         print $fh 's/__PATH_ORDWR/O_RDWR/g' . ";\n" ;
+         print $fh 's/__PATH_OTRUNC/O_TRUNC/g' . ";\n" ;
+         print $fh 's/__PATH_OWRONLY/O_WRONLY/g' . ";\n" ;
       }
       elsif ( 1 )
       {
-         print $fh 's/(.......) *\*(.*);    /P32($1) $2;/;' . ";\n" ;
-         #print $fh 's/VOIDP32 (.*); /P32(void) $1;/;' . ";\n" ;
-         #print $fh 's/P32\(void\) (.*); /P32(void) $1;/;' . ";\n" ;
+         print $fh 's/(.......) *\*(.*)    /P32($1) $2;/;' . ";\n" ;
+         #print $fh 's/VOIDP32 (.*) /P32(void) $1;/;' . ";\n" ;
+         #print $fh 's/P32\(void\) (.*) /P32(void) $1;/;' . ";\n" ;
          #void *
          #VOIDP32
          #P32(void)
