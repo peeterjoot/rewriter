@@ -107,6 +107,10 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       }
       elsif ( 1 )
       {
+         print $fh 's/ XXXXXXX\./ SECTION./' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/C370_ERRNO\( *glob *\) = (__LZ[^ ;]+)/__lz_set_errno( glob, $1 )/' . ";\n" ;
       }
       elsif ( 1 )
