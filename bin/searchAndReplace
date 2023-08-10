@@ -219,15 +219,35 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       }
       elsif ( 1 )
       {
+         print $fh 's/$/./' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/\\\\\\\\ *$/./' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/}{fig:/.}{fig:/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/\}/.}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/0.3}/0.2}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/0\.3\}/0.2}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
          print $fh 's/}{problem/.}{problem/' . ";\n" ;
       }
       elsif ( 1 )
       {
          print $fh 's/} *$/.}/' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/}{fig:/.}{fig:/' . ";\n" ;
       }
 
       if ( 1 )
@@ -240,14 +260,6 @@ while ( my ($file, $lines) = each ( %linesByFile ) )
       elsif ( 1 )
       {
          print $fh 's/= *0/= NULL/' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/$/./' . ";\n" ;
-      }
-      elsif ( 1 )
-      {
-         print $fh 's/\}/.}/' . ";\n" ;
       }
       elsif ( 1 )
       {
