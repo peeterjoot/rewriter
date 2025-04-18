@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# Precompile the regex pattern
+my $pattern = qr{
+    FOO         # Match the literal string "FOO"
+    \(          # Match the opening parenthesis
+    \s*         # Optional whitespace after opening parenthesis
+    ([^,]+)     # Capture first parameter (anything that's not a comma)
+    \s*,\s*     # Comma with optional whitespace around it
+    ([^)]+)     # Capture second parameter (anything that's not a closing parenthesis)
+    \s*         # Optional whitespace before closing parenthesis
+    \)          # Match the closing parenthesis
+}x;
+
+# Test cases
+my @tests = (
+    ["FOO( bar, har )",           "bar = har"],
+    #["FOO(goo , moo), extra",      "goo = moo, extra"],
+    ["FOO( x , y )",              "x = y"],
+    ["FOO(a,b)",                   "a = b"],
+);
+
+# If no arguments or piped input, run tests
+if (!@ARGV && -t STDIN) {
+    print "Running tests...\n";
+    my $passed = 0;
+    for my $test (@tests) {
+        my ($input, $expected) = @$test;
+        my $result = $input;
+        $result =~ s/$pattern/$1 = $2/;
+        $result =~ s/ *$//;
+        $result =~ s/  */ /g;
+        if ($result eq $expected) {
+            print "PASS: '$input' -> '$result'\n";
+            $passed++;
+        } else {
+            print "FAIL: '$input' -> '$result' (expected '$expected')\n";
+        }
+    }
+    print "$passed/" . scalar(@tests) . " tests passed\n";
+    exit;
+}
+
+# Otherwise, act as a filter
+while (<>) {
+    s/$pattern/$1 = $2/;
+    print;
+}

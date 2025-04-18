@@ -1,0 +1,293 @@
+#!/usr/bin/perl
+
+#-----------------------------------------------------------------------------
+# POD Format Documentation.  Read "perldoc perlpod" for an example.
+# When done, check syntax with "podchecker".
+
+=head1 NAME
+
+addi - Add '#include' or forward reference to a set of files.
+
+=head1 SYNOPSIS
+
+addi [--help] {--class foo|--struct foo|--union foo|--user foo.h|--system foo.h} [--comment c] LISTOFFILENAMES
+
+=head1 DESCRIPTION
+
+Find the first #define or #include in a file, and add an additional #include or forward reference at that point.
+
+Options:
+
+=over 4
+
+=item --[no-]interactive
+
+Invoke vim at the edit insertion point.
+
+=item --lookup name
+
+Try to find name in a lookup table and insert an include for it.
+
+=item --user=foo.h
+
+Add:
+
+   #include <foo.h>
+
+=item --system=foo.h
+
+Add:
+
+   #include <foo.h>
+
+=item --comment='text'
+
+Add:
+
+ // text
+
+to the line added.
+
+=item --(struct|class|union)=name
+
+Adds:
+
+   type name ;
+
+at the #include point.
+
+=back 
+
+=head1 SUPPORTED PLATFORMS
+
+ Unix (Linux verified)
+
+=head1 SUPPORT
+
+ Send email to peeter.joot@lzlabs.com
+
+=head1 AUTHORS
+
+ Peeter Joot
+
+=cut
+
+#-----------------------------------------------------------------------------
+
+use strict ;
+use warnings ;
+use Getopt::Long ;
+use Pod::Usage ;
+
+# Suppress sourcing of users' .bashrc files in invoked shells
+delete $ENV{'ENV'} ;
+delete $ENV{'BASH_ENV'} ;
+
+# Set STDOUT and STDERR to unbuffered
+select STDERR ; $| = 1 ;
+select STDOUT ; $| = 1 ;
+
+my $myName = '' ;
+
+($myName = $0) =~ s@.*[/\\]@@ ;
+my @class = () ;
+my @union = () ;
+my @struct = () ;
+my @system = () ;
+my @user = () ;
+my @lookup = () ;
+my $comment = '' ;
+my $interactive = 1 ;
+
+Getopt::Long::Configure( 'pass_through' ) ;
+
+GetOptions ( 
+   'interactive!'       => \$interactive,
+   'lookup=s'           => \@lookup,
+   'user=s'             => \@user,
+   'system=s'           => \@system,
+   'class=s'            => \@class,
+   'union=s'            => \@union,
+   'struct=s'           => \@struct,
+   'comment=s'          => \$comment,
+   'help'               => sub { pod2usage(-verbose => 2) ; },
+) or pod2usage(-verbose => 0) ;
+
+my @file = @ARGV ;
+
+# Validate/handle options, and everything else...
+
+if ( ( scalar( @user ) +
+       scalar( @system ) +
+       scalar( @lookup ) +
+       scalar( @class ) +
+       scalar( @union ) +
+       scalar( @struct ) +
+       0 ) == 0 )
+{
+   die "$myName: one of the mandatory arguments must be supplied.\n" ;
+}
+
+unless ( scalar( @file ) )
+{
+   die "$myName: -file must be specified" ;
+}
+
+my $newtext = insertionString() ;
+
+foreach ( @file )
+{
+   die "$myName: cannot access '$_'" unless ( -e "$_" ) ;
+
+   my $g = `grep -ne '^ *# *define' -e '^ *# *include' $_ .u 2>/dev/null | head -1` ; chomp $g ;
+
+   die "$myName: header: '$_' has no include guard nor #includes.\n" if ( $g eq '' ) ;
+
+   $g =~ /^.*?:(\d+):/ or die "$myName: malformed grep result '$g'" ;
+   my $lineno = $1 ;
+
+   searchAndReplace( $_, $lineno + 1, $newtext ) ;
+}
+
+exit 0 ;
+
+sub insertionString
+{
+   my $out = '' ;
+   my $c = '' ;
+   my @s = () ;
+   
+   $c = " // $comment" if ( $comment ne '' ) ;
+
+   push( @s, map{ qq(#include "$_"$c\n) } @user ) ;
+   push( @s, map{ qq(#include <$_>$c\n) } @system ) ;
+   push( @s, map{ qq(class $_ ;\n) } @class ) ;
+   push( @s, map{ qq(struct $_ ;\n) } @struct ) ;
+   push( @s, map{ qq(union $_ ;\n) } @union ) ;
+
+   $out .= $_ foreach ( @s ) ;
+
+   my %lookuptable = (
+      'BFPRM_CHECK' => 'opcode.h',
+      'DW_CHECK' => 'opcode.h',
+      'DYN_DALBLKLN' => 'lz_dynallocAPI.h',
+      'DYN_DALCDISP' => 'lz_dynallocAPI.h',
+      'DYN_DALCYL' => 'lz_dynallocAPI.h',
+      'DYN_DALDDNAM' => 'lz_dynallocAPI.h',
+      'DYN_DALDIR' => 'lz_dynallocAPI.h',
+      'DYN_DALDSNAM' => 'lz_dynallocAPI.h',
+      'DYN_DALMEMBR' => 'lz_dynallocAPI.h',
+      'DYN_DALNDISP' => 'lz_dynallocAPI.h',
+      'DYN_DALPRIME' => 'lz_dynallocAPI.h',
+      'DYN_DALPRIVT' => 'lz_dynallocAPI.h',
+      'DYN_DALRLSE' => 'lz_dynallocAPI.h',
+      'DYN_DALROUND' => 'lz_dynallocAPI.h',
+      'DYN_DALSECND' => 'lz_dynallocAPI.h',
+      'DYN_DALSPFRM' => 'lz_dynallocAPI.h',
+      'DYN_DALSTATS' => 'lz_dynallocAPI.h',
+      'DYN_DALTRK' => 'lz_dynallocAPI.h',
+      'DYN_DALVLCNT' => 'lz_dynallocAPI.h',
+      'DYN_DALVLSEQ' => 'lz_dynallocAPI.h',
+      'DYN_DALVLSER' => 'lz_dynallocAPI.h',
+      'E' => 'opcode.h',
+      'epoch_direction_forward' => 'lz_epoch.h',
+      'epoch_direction_reverse' => 'lz_epoch.h',
+      'EXECUTE_INSTRUCTION' => 'opcode.h',
+      'FETCH_INSTRUCTION' => 'opcode.h',
+      'FPR2I' => 'opcode.h',
+      'FW_CHECK' => 'opcode.h',
+      'HFPM_CHECK' => 'opcode.h',
+      'HFPODD2_CHECK' => 'opcode.h',
+      'HFPODD_CHECK' => 'opcode.h',
+      'HFPREG2_CHECK' => 'opcode.h',
+      'HFPREG_CHECK' => 'opcode.h',
+#      '_LAE_rfetch' => 'macros.h',
+#      'LAE_rfetch' => 'macros.h',
+#      '_LAE_vfetch2' => 'macros.h',
+#      'LAE_vfetch2' => 'macros.h',
+#      '_LAE_vfetch4' => 'macros.h',
+#      'LAE_vfetch4' => 'macros.h',
+      'OBTAIN_INCRCOMPLOCK' => 'lhe.h',
+      'ODD2_CHECK' => 'opcode.h',
+      'ODD_CHECK' => 'opcode.h',
+      'PERFORM_CHKPT_SYNC' => 'opcode.h',
+      'PERFORM_SERIALIZATION' => 'opcode.h',
+      'PRIV_CHECK' => 'opcode.h',
+      'RELEASE_INCRCOMPLOCK' => 'lhe.h',
+      'RIEB' => 'opcode.h',
+      'RIEC' => 'opcode.h',
+      'RIL_A' => 'opcode.h',
+      'RILA' => 'opcode.h',
+      'RIL' => 'opcode.h',
+      'RI' => 'opcode.h',
+      'RRE' => 'opcode.h',
+      'RRF_M4' => 'opcode.h',
+      'RRF_MM' => 'opcode.h',
+      'RRF_M' => 'opcode.h',
+      'RRF_RM' => 'opcode.h',
+      'RRF_R' => 'opcode.h',
+      'RR' => 'opcode.h',
+      'RRR' => 'opcode.h',
+      'RR_SVC' => 'opcode.h',
+      'RSE' => 'opcode.h',
+      'RSI' => 'opcode.h',
+      'RS' => 'opcode.h',
+      'RSY' => 'opcode.h',
+      'RXE' => 'opcode.h',
+      'RX' => 'opcode.h',
+      'RXYA' => 'opcode.h',
+      'RXY' => 'opcode.h',
+      'SIL' => 'opcode.h',
+      'SI' => 'opcode.h',
+      'S' => 'opcode.h',
+      'SSE' => 'opcode.h',
+      'SS_L' => 'opcode.h',
+      'SS' => 'opcode.h',
+      'UNROLLED_EXECUTE' => 'opcode.h',
+      'WH' => 'opcode.h',
+   ) ;
+
+   my %headerLookups = () ;
+
+   foreach my $pat ( @lookup )
+   {
+      my $h = $lookuptable{$pat} ;
+
+      if ( defined $h )
+      {
+         if ( defined $headerLookups{$h} )
+         {
+            $headerLookups{$h} .= ", $pat" ;
+         }
+         else
+         {
+            $headerLookups{$h} = $pat ;
+         }
+      }
+   } 
+
+   foreach ( keys %headerLookups )
+   {
+      $out .= qq(#include "$_" // $headerLookups{$_}\n) ;
+   }
+
+   return $out ;
+}
+
+sub searchAndReplace
+{
+   my ( $file, $lineno, $add ) = @_ ;
+
+   open my $fh, ">tmp$$" or die ;
+
+      print $fh "if ( \$. == $lineno )\n{\n" ;
+
+      print $fh 'print qq(' . $add . ') ;' . "\n" ;
+
+      print $fh "}\n" ;
+
+   close $fh ;
+
+   system( "perl -p -i ./tmp$$ $file ; rm tmp$$" ) ;
+   system( "vim +$lineno $file" ) if ( $interactive ) ;
+}

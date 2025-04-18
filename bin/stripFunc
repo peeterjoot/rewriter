@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+while (<>) {
+    s{
+        FOO         # Match the literal string "FOO"
+        \(          # Match the opening parenthesis
+        ([^)]*)     # Capture any character that's not a closing parenthesis, zero or more times
+        \)          # Match the closing parenthesis
+    }{$1}x;
+    print;
+}
+
+# transform
+#my @examples = (
+#    "FOO( goo->moo ), blah, maa", # goo->moo, blah, maa
+#    "FOO( goo )",                 # goo
+#    "FOO(goo())",                 # goo()
+#    "FOO( moo->goo )"             # moo->goo
+#);
+#
+#foreach my $text (@examples) {
+#    $text =~ s{
+#        FOO         # Match the literal string "FOO"
+#        \(          # Match the opening parenthesis
+#        ([^)]*)     # Capture any character that's not a closing parenthesis, zero or more times
+#        \)          # Match the closing parenthesis
+#    }{$1}x;
+#    print "$text\n";
+#}

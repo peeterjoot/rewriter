@@ -1,0 +1,42 @@
+#! /usr/bin/perl
+
+use strict;
+use warnings;
+
+my $input = shift @ARGV || '-';
+open my $fh, '<', $input or die "Could not open input: $!";
+my %changes;
+
+while (my $line = <$fh>) {
+    chomp $line;
+
+    
+    if ($line =~ /^(.*):(\d+):( *
+        my $file = $1;
+        my $lineno = $2;
+        my $include = $3;
+
+        
+        push @{ $changes{$file} }, { line => $lineno, content => "//$include" };
+    }
+}
+
+close $fh;
+
+
+foreach my $file (keys %changes) {
+    
+    open my $in, '<', $file or die "Could not open file $file: $!";
+    my @lines = <$in>;
+    close $in;
+    
+    foreach my $change (@{ $changes{$file} }) {
+        my $lineno = $change->{line};
+        my $new_content = $change->{content};
+        $lines[$lineno - 1] = "$new_content\n"; 
+    }
+
+    open my $out, '>', $file or die "Could not write to file $file: $!";
+    print $out @lines;
+    close $out;
+}

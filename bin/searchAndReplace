@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+#-----------------------------------------------------------------------------
+# POD Format Documentation.  Read "perldoc perlpod" for an example.
+# When done, check syntax with "podchecker".
+
+=head1 NAME
+
+searchAndReplace - apply hardcoded search and replace expressions to specific lines in a file.
+
+=head1 SYNOPSIS
+
+searchAndReplace [--help] < 'file with grep -n output or similar'
+
+=head1 DESCRIPTION
+
+This is a filter script that applies hardcoded search and replace expressions to specific lines
+in a file.  Those lines are specified in STDIN and should have the form
+
+path/to/file:nnn:...
+
+(i.e. output, possibly pruned, from grep -n).
+
+=head1 SUPPORTED PLATFORMS
+
+ Unix (Linux verified)
+
+=head1 SUPPORT
+
+ Send email to peeter.joot@lzlabs.com
+
+=head1 AUTHORS
+
+ Peeter Joot
+
+=cut
+
+#-----------------------------------------------------------------------------
+
+use strict ;
+use warnings ;
+use Getopt::Long ;
+use Pod::Usage ;
+
+# Suppress sourcing of users' .bashrc files in invoked shells
+delete $ENV{'ENV'} ;
+delete $ENV{'BASH_ENV'} ;
+
+# Set STDOUT and STDERR to unbuffered
+select STDERR ; $| = 1 ;
+select STDOUT ; $| = 1 ;
+
+my $myName = '' ;
+
+($myName = $0) =~ s@.*[/\\]@@ ;
+
+GetOptions ( 
+   'help'               => sub { pod2usage(-verbose => 2) ; },
+) or pod2usage(-verbose => 0) ;
+
+my %linesByFile = () ;
+
+while (<>)
+{
+   chomp ;
+   
+   if ( /(.*?):(\d+):/ )
+   {
+      my ( $file, $line ) = ( $1, $2 ) ;
+
+      if ( defined $linesByFile{$file} )
+      {
+         $linesByFile{$file} .= ",$line" ;
+      }
+      else
+      {
+         $linesByFile{$file} = $line ;
+      }
+   }
+}
+
+while ( my ($file, $lines) = each ( %linesByFile ) )
+{
+   open my $fh, ">tmp$$" or die ;
+
+   foreach ( split( /,/, $lines ) )
+   {
+      print $fh "if ( \$. == $_ )\n{\n" ;
+
+      if ( 1 )
+      {
+         print $fh 's/{0\.3}/{0.2}/' . ";\n" ;
+      }
+      elsif ( 1 )
+      {
+         print $fh 's/= *0/= NULL/' . ";\n" ;
+      }
+   
+      print $fh "}\n" ;
+   }
+
+   close $fh ;
+
+   #print "# perl -p -i ./tmp$$ '$file' ; rm tmp$$\n" ;
+   system( "perl -p -i ./tmp$$ '$file'" ) ;
+   system( "rm tmp$$" ) ;
+}

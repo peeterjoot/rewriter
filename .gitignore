@@ -1,0 +1,4 @@
+*.o
+exit/exrewrite
+exit/test
+exit/tool

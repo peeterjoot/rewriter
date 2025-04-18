@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/pjoot/rewriter/exit/test",
+  "command": "/usr/bin/clang -std=gnu99 -o t.o -c /home/pjoot/rewriter/exit/test/t.c",
+  "file": "/home/pjoot/rewriter/exit/test/t.c",
+  "output": "t.o"
+},
+{
+  "directory": "/home/pjoot/rewriter/exit/test",
+  "command": "/usr/bin/clang -std=gnu99 -o t2.o -c /home/pjoot/rewriter/exit/test/t2.c",
+  "file": "/home/pjoot/rewriter/exit/test/t2.c",
+  "output": "t2.o"
+}
+]
