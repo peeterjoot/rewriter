@@ -1,0 +1,14 @@
+# Customize this line appropriately:
+export LD_LIBRARY_PATH=/usr/local/llvm-20.1.7/lib64
+
+cd test || exit 1
+cp ../test.in/*.c .
+rm -f *.o
+../tool/bin/exrewrite --from exit --to foo_exit t2.c
+
+
+#../tool/bin/exrewrite --from exit --to foo_exit /home/pjoot/rewriter/exit/test/t2.c
+#../exrewrite --from exit --to foo_exit /home/pjoot/rewriter/exit/test/t2.c -- -I/usr/include -I/usr/lib/clang/17/include
+#../exrewrite --from exit --to foo_exit /home/pjoot/rewriter/exit/test/t.c -- -I/usr/include -I/usr/lib/clang/17/include
+for i in *.c ; do diff -wup ../test.in/$i $i ; done
+#gdb ../exrewrite

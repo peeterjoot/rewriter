@@ -1,42 +1,97 @@
-#! /usr/bin/perl
+#!/usr/bin/perl
 
-use strict;
-use warnings;
+#-----------------------------------------------------------------------------
+# POD Format Documentation.  Read "perldoc perlpod" for an example.
+# When done, check syntax with "podchecker".
+
+=head1 NAME
+
+comment_includes - comment out stuff based on 'grep -n' derived output.
+
+=head1 SYNOPSIS
+
+comment_includes [--help]
+
+=head1 DESCRIPTION
+
+This is a filter takes a list of "file:line_number:include" lines (i.e.: grep -n output)
+and comments out the specified include statements (or any line) in the target source files by
+prefixing them with //.  It can be used to temporarily disable includes
+without manually editing the files.
+
+=head1 SUPPORTED PLATFORMS
+
+ Unix (Linux verified)
+
+=head1 SUPPORT
+
+ Send email to peeterjoot@pm.me
+
+=head1 AUTHORS
+
+ Peeter Joot
+
+=cut
+
+#-----------------------------------------------------------------------------
+
+use strict ;
+use warnings ;
+use Getopt::Long ;
+use Pod::Usage ;
+
+# Suppress sourcing of users' .bashrc files in invoked shells
+delete $ENV{'ENV'} ;
+delete $ENV{'BASH_ENV'} ;
+
+# Set STDOUT and STDERR to unbuffered
+select STDERR ; $| = 1 ;
+select STDOUT ; $| = 1 ;
+
+my $myName = '' ;
+
+($myName = $0) =~ s@.*[/\\]@@ ;
+
+#Getopt::Long::Configure( 'pass_through' ) ;
+GetOptions (
+  'help'               => sub { pod2usage(-verbose => 2) ; },
+) or pod2usage(-verbose => 0) ;
+
+# Validate/handle options, and everything else...
 
 my $input = shift @ARGV || '-';
 open my $fh, '<', $input or die "Could not open input: $!";
 my %changes;
 
 while (my $line = <$fh>) {
-    chomp $line;
+  chomp $line;
 
-    
-    if ($line =~ /^(.*):(\d+):( *
-        my $file = $1;
-        my $lineno = $2;
-        my $include = $3;
+  if ($line =~ /^(.*):(\d+):( *
+    my $file = $1;
+    my $lineno = $2;
+    my $include = $3;
 
-        
-        push @{ $changes{$file} }, { line => $lineno, content => "//$include" };
-    }
+    push @{ $changes{$file} }, { line => $lineno, content => "//$include" };
+  }
 }
 
 close $fh;
 
-
 foreach my $file (keys %changes) {
-    
-    open my $in, '<', $file or die "Could not open file $file: $!";
-    my @lines = <$in>;
-    close $in;
-    
-    foreach my $change (@{ $changes{$file} }) {
-        my $lineno = $change->{line};
-        my $new_content = $change->{content};
-        $lines[$lineno - 1] = "$new_content\n"; 
-    }
 
-    open my $out, '>', $file or die "Could not write to file $file: $!";
-    print $out @lines;
-    close $out;
+  open my $in, '<', $file or die "Could not open file $file: $!";
+  my @lines = <$in>;
+  close $in;
+
+  foreach my $change (@{ $changes{$file} }) {
+    my $lineno = $change->{line};
+    my $new_content = $change->{content};
+    $lines[$lineno - 1] = "$new_content\n";
+  }
+
+  open my $out, '>', $file or die "Could not write to file $file: $!";
+  print $out @lines;
+  close $out;
 }
+
+# vim: et ts=2 sw=2

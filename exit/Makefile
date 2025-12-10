@@ -1,9 +1,17 @@
 LOADLIBES += -lclang-cpp
 CXXFLAGS += -g
 TOOL := exrewrite
-# /usr/bin/../lib/clang/17 with /usr stripped off:
-CLANG_PREFIX_WITHOUT_USR := lib/clang/17
 INSTALLDIR := tool
+
+# customize these three vars to match your clang installation:
+LLVMPREFIX := /usr/local/llvm-20.1.7
+# /usr/bin/../lib64/clang/20 with /usr stripped off:
+# /usr/local/llvm-20.1.7/bin/../lib64/clang/20 with the prefix stripped off:
+CLANG_PREFIX_WITHOUT_USR := lib64/clang/20
+CLANG_VV_INCLUDE := $(LLVMPREFIX)/$(CLANG_PREFIX_WITHOUT_USR)/include
+
+# comment this out if default llvm/clang has a usable set of the AST includes (AST.h, ...)
+LLVMBIN := $(LLVMPREFIX)/bin/
 
 all : $(INSTALLDIR)
 
@@ -22,6 +30,6 @@ $(INSTALLDIR): $(TOOL)
 	rm -rf $@
 	mkdir -p $@/bin $@/$(CLANG_PREFIX_WITHOUT_USR)
 	install $(TOOL) $@/bin/
-	(cd $@/$(CLANG_PREFIX_WITHOUT_USR) && ln -s /usr/$(CLANG_PREFIX_WITHOUT_USR)/include)
+	(cd $@/$(CLANG_PREFIX_WITHOUT_USR) && ln -s $(CLANG_VV_INCLUDE))
 
 # vim: noet ts=8 sw=8
