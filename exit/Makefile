@@ -3,23 +3,27 @@ CXXFLAGS += -g
 TOOL := exrewrite
 INSTALLDIR := tool
 
-# customize these three vars to match your clang installation:
-LLVMPREFIX := /usr/local/llvm-20.1.7
-# /usr/bin/../lib64/clang/20 with /usr stripped off:
-# /usr/local/llvm-20.1.7/bin/../lib64/clang/20 with the prefix stripped off:
-CLANG_PREFIX_WITHOUT_USR := lib64/clang/20
+# Customize these to match your clang installation:
+LLVMMAJOR := 21
+LLVMPREFIX := /usr/local/llvm-$(LLVMMAJOR).1.7
+CLANG_PREFIX_WITHOUT_USR := lib64/clang/$(LLVMMAJOR)
 CLANG_VV_INCLUDE := $(LLVMPREFIX)/$(CLANG_PREFIX_WITHOUT_USR)/include
 
-# comment this out if default llvm/clang has a usable set of the AST includes (AST.h, ...)
+# Comment this out if default llvm/clang has a usable set of the AST includes (AST.h, ...)
+# (if that's the case the -rpath below is probably also not required)
 LLVMBIN := $(LLVMPREFIX)/bin/
+
+LLVMCXXFLAGS := $(shell $(LLVMBIN)llvm-config --cxxflags)
+LLVMLIBDIR := $(shell $(LLVMBIN)llvm-config --libdir)
+LLVMLDFLAGS := $(shell $(LLVMBIN)llvm-config --ldflags --system-libs --libs all)
 
 all : $(INSTALLDIR)
 
 $(TOOL) : $(TOOL).o
-	clang++ $^ -o $@ `$(LLVMBIN)llvm-config --ldflags --system-libs --libs all` $(LOADLIBES)
+	clang++ $^ -o $@ $(LLVMLDFLAGS) $(LOADLIBES) -Wl,-rpath,$(LLVMLIBDIR)
 
 %.o : %.cpp
-	clang++ $(CXXFLAGS) -c $^ `$(LLVMBIN)llvm-config --cxxflags`
+	clang++ $(CXXFLAGS) -c $^ $(LLVMCXXFLAGS)
 
 clean :
 	rm -f *.o $(TOOL)
