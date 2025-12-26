@@ -4,7 +4,7 @@ CXXFLAGS += -g
 TOOL := autoremover
 INSTALLDIR := tool
 
-#USE_MINE := 1
+USE_MINE := 1
 ifdef USE_MINE
 # Customize these to match your clang installation:
 LLVMMAJOR := 21

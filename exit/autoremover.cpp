@@ -22,32 +22,38 @@ public:
 
     void run(const MatchFinder::MatchResult &Result) override {
         if (const auto *VD = Result.Nodes.getNodeAs<VarDecl>("autoVar")) {
-            // Only process variables that use 'auto' as type specifier
-            if (!VD->getTypeSourceInfo() || !VD->getTypeSourceInfo()->getType()->isAutoType()) {
-                return;
-            }
+            TypeSourceInfo *TSI = VD->getTypeSourceInfo();
+            if (!TSI) return;
 
-            QualType Deduced = VD->getType();
-            if (Deduced->isDeducedType()) {
-                Deduced = Deduced->getDeducedType();
-            }
+            QualType QT = TSI->getType();
+            if (QT.isNull()) return;
 
-            if (Deduced.isNull()) {
-                errs() << "Failed to deduce type\n";
-                return;
-            }
+            const clang::Type *TP = QT.getTypePtr();
+            if (!TP) return;
+
+            const AutoType *AT = TP->getAs<AutoType>();
+            if (!AT) return;
+
+            // Skip if not deduced yet (e.g., dependent or no initializer)
+            if (!AT->isDeduced()) return;
+
+            QualType Deduced = AT->getDeducedType();
+            if (Deduced.isNull()) return;
 
             ASTContext *Ctx = Result.Context;
             if (!Ctx) return;
 
-            SourceLocation TypeStart = VD->getTypeSpecStartLoc();
-            if (!TypeStart.isValid() || !TypeStart.isFileID()) {
-                return;
-            }
+            SourceLocation TypeStart = TSI->getTypeLoc().getBeginLoc();
+            if (!TypeStart.isValid() || !TypeStart.isFileID()) return;
 
-            SourceLocation TypeEnd = VD->getTypeSpecEndLoc();
-            if (!TypeEnd.isValid()) {
-                // Fallback: compute end from the name location
+            // Find the end of the type specifier (after 'auto' and any cv/ref)
+            TypeLoc TL = TSI->getTypeLoc();
+            AutoTypeLoc ATL = TL.getAs<AutoTypeLoc>();
+            if (ATL.isNull()) return;
+
+            SourceLocation TypeEnd = ATL.getRParenLoc();
+            if (!TypeEnd.isValid() || TypeEnd.isMacroID()) {
+                // Fallback: use location just before the name
                 SourceLocation NameLoc = VD->getLocation();
                 if (NameLoc.isValid()) {
                     TypeEnd = NameLoc.getLocWithOffset(-1);
@@ -59,10 +65,12 @@ public:
                 return;
             }
 
-            // Ensure we are replacing the correct range (skip leading cv-qualifiers if any)
-            std::string Replacement = Deduced.getAsString(Ctx->getPrintingPolicy());
+            PrintingPolicy Policy = Ctx->getPrintingPolicy();
+            Policy.SuppressScope = false;  // Print full qualified names
+            Policy.FullyQualifiedName = true;
 
-            // Replace the 'auto' (and any trailing cv/ref) with the deduced type
+            std::string Replacement = Deduced.getAsString(Policy);
+
             SourceRange ReplaceRange(TypeStart, TypeEnd);
             Rewrite.ReplaceText(ReplaceRange, Replacement);
         }
@@ -95,12 +103,11 @@ public:
         auto *Replacer = new AutoReplacer(TheRewriter);
         Finder = std::make_unique<MatchFinder>();
 
-        // Match local and global variables (including statics) that use 'auto' and have an initializer
-        // (auto without initializer is invalid in most contexts)
         DeclarationMatcher AutoMatcher = varDecl(
             hasType(autoType()),
             hasInitializer(anything()),
-            unless(parmVarDecl())  // exclude function parameters for simplicity
+            unless(isExpansionInSystemHeader()),
+            unless(parmVarDecl())  // Exclude function parameters
         ).bind("autoVar");
 
         Finder->addMatcher(AutoMatcher, Replacer);
