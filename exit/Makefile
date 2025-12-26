@@ -1,6 +1,7 @@
 LOADLIBES += -lclang-cpp
 CXXFLAGS += -g
-TOOL := exrewrite
+#TOOL := exrewrite
+TOOL := autoremover
 INSTALLDIR := tool
 
 #USE_MINE := 1
